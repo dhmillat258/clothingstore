@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Add Product - Admin</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ClothingStore Admin
+    </div>
+
+    <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/logout">Logout</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="admin-form">
+        <p th:if="${error}"
+           th:text="${error}"
+           style="color: red; font-weight: bold;">
+        </p>
+
+        <h1>Add Product</h1>
+
+        <form action="/admin/products/save"
+              method="post">
+
+            <label>Product Name</label>
+
+            <input type="text"
+                   name="name"
+                   required>
+
+            <label>Price</label>
+
+            <input type="number"
+                   name="price"
+                   min="0.01"
+                   step="0.01"
+                   required>
+
+            <label>Color</label>
+
+            <input type="text"
+                   name="color">
+
+            <label>Image Path</label>
+
+            <input type="text"
+                   name="image"
+                   placeholder="/images/product.jpg"
+                   required>
+
+            <label>Category</label>
+
+            <select name="category"
+                    required>
+
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+
+            </select>
+
+            <label>Stock Quantity</label>
+
+            <input type="number"
+                   name="stock"
+                   min="0"
+                   value="0"
+                   required>
+
+            <button type="submit">
+                Save Product
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClothingStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ClothingStore
+    </div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/products">All Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/contact">Contact</a>
+
+        <span th:if="${session.customerId == null}">
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        </span>
+
+        <span th:if="${session.customerId != null}">
+            <a href="/order-history">My Orders</a>
+            <a href="/logout">Logout</a>
+        </span>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>Style That Fits You</h1>
+
+            <p>
+                Quality clothing for wholesale and retail customers.
+            </p>
+
+            <a href="/products" class="hero-button">
+                Shop Now
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORIES -->
+    <section class="categories">
+
+        <h2>Shop By Category</h2>
+
+        <div class="category-container">
+
+            <div class="category-card">
+
+                <h3>Men</h3>
+
+                <p>
+                    Explore men's clothing
+                </p>
+
+                <a href="/men">
+                    Shop Men
+                </a>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <h3>Women</h3>
+
+                <p>
+                    Explore women's clothing
+                </p>
+
+                <a href="/women">
+                    Shop Women
+                </a>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <h3>Kids</h3>
+
+                <p>
+                    Explore kids' clothing
+                </p>
+
+                <a href="/kids">
+                    Shop Kids
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="products">
+
+        <h2>Featured Products</h2>
+
+        <div class="product-container">
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/realmadrid-black.jpeg"
+                         alt="Real Madrid T-Shirt Black">
+
+                </div>
+
+                <h3>Real Madrid T-Shirt</h3>
+
+                <p>৳950</p>
+
+                <a href="/product-details?product=1">
+                    View Product
+                </a>
+
+            </div>
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/korean-beggy-black.jpeg"
+                         alt="Korean Baggy Black">
+
+                </div>
+
+                <h3>Korean Baggy</h3>
+
+                <p>৳1,290</p>
+
+                <a href="/product-details?product=3">
+                    View Product
+                </a>
+
+            </div>
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/korean-beggy-white.jpeg"
+                         alt="Korean Baggy White">
+
+                </div>
+
+                <h3>Korean Baggy</h3>
+
+                <p>৳1,290</p>
+
+                <a href="/product-details?product=4">
+                    View Product
+                </a>
+
+            </div>
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/kids-frog.jpeg"
+                         alt="Kids Frog">
+
+                </div>
+
+                <h3>Kids Frog</h3>
+
+                <p>৳490</p>
+
+                <a href="/product-details?product=5">
+                    View Product
+                </a>
+
+            </div>
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/casual-shoe.jpg"
+                         alt="Casual Shoe">
+
+                </div>
+
+                <h3>Casual Shoe</h3>
+
+                <p>৳1,500</p>
+
+                <a href="/product-details?product=8">
+                    View Product
+                </a>
+
+            </div>
+
+
+            <div class="product-card">
+
+                <div class="product-image">
+
+                    <img src="/images/shoe.jpg"
+                         alt="Men's Shoe">
+
+                </div>
+
+                <h3>Men's Shoe</h3>
+
+                <p>৳1,800</p>
+
+                <a href="/product-details?product=9">
+                    View Product
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH -->
+    <section class="search-section">
+
+        <h2>Find Your Product</h2>
+
+        <div class="search-box">
+
+            <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search products..."
+                    autocomplete="off"
+                    list="productSuggestions"
+                    onkeydown="if(event.key === 'Enter') searchProduct()"
+            >
+
+            <datalist id="productSuggestions">
+
+                <option value="Real Madrid T-Shirt">
+                <option value="Korean Baggy">
+                <option value="Casual Shoe">
+                <option value="Men's Shoe">
+                <option value="Sharee">
+                <option value="Women's Top">
+                <option value="Kids Frog">
+
+            </datalist>
+
+            <button type="button" onclick="searchProduct()">
+                Search
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="/js/script.js?v=6"></script>
+
+</body>
+</html>

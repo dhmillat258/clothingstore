@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Edit Product - Admin</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ClothingStore Admin
+    </div>
+
+    <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/logout">Logout</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="admin-form">
+
+        <h1>Edit Product</h1>
+        <p th:if="${error}"
+           th:text="${error}"
+           style="color:red; font-weight:bold;">
+        </p>
+
+        <form action="/admin/products/save"
+              method="post">
+
+            <input type="hidden"
+                   name="id"
+                   th:value="${product.id}">
+
+            <label>Product Name</label>
+
+            <input type="text"
+                   name="name"
+                   th:value="${product.name}"
+                   required>
+
+            <label>Price</label>
+
+            <input type="number"
+                   name="price"
+                   min="0"
+                   step="0.01"
+                   th:value="${product.price}"
+                   required>
+
+            <label>Color</label>
+
+            <input type="text"
+                   name="color"
+                   th:value="${product.color}">
+
+            <label>Image Path</label>
+
+            <input type="text"
+                   name="image"
+                   th:value="${product.image}"
+                   required>
+
+            <label>Category</label>
+
+            <select name="category">
+
+                <option value="Men"
+                        th:selected="${product.category == 'Men'}">
+                    Men
+                </option>
+
+                <option value="Women"
+                        th:selected="${product.category == 'Women'}">
+                    Women
+                </option>
+
+                <option value="Kids"
+                        th:selected="${product.category == 'Kids'}">
+                    Kids
+                </option>
+
+            </select>
+
+            <label>Stock Quantity</label>
+
+            <input type="number"
+                   name="stock"
+                   min="0"
+                   th:value="${product.stock}"
+                   required>
+
+            <button type="submit">
+                Update Product
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

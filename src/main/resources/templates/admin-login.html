@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login - ClothingStore</title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ClothingStore Admin
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="admin-form">
+
+        <h1>Admin Login</h1>
+
+
+        <p
+                th:if="${error}"
+                th:text="${error}"
+                style="color: red;">
+        </p>
+
+
+        <form
+                action="/admin/login"
+                method="post">
+
+
+            <label>
+                Username
+            </label>
+
+            <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter username"
+                    required>
+
+
+            <label>
+                Password
+            </label>
+
+            <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter password"
+                    required>
+
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

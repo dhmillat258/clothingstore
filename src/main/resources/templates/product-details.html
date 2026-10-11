@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details - ClothingStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">ClothingStore</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/products">All Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/contact">Contact</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="product-details"
+             th:if="${product != null}">
+
+        <div class="product-details-image">
+
+            <img th:src="${product.image}"
+                 th:alt="${product.name}">
+
+        </div>
+
+        <div class="product-details-info">
+
+            <h1 th:text="${product.name}">
+                Product Name
+            </h1>
+
+            <p class="product-price">
+                ৳<span th:text="${#numbers.formatDecimal(product.price, 0, 0)}">
+                0
+            </span>
+            </p>
+
+            <p th:if="${product.color != null and product.color != ''}">
+                <strong>Color:</strong>
+                <span th:text="${product.color}">Color</span>
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                <span th:text="${product.category}">Category</span>
+            </p>
+
+            <p>
+                <strong>Available Stock:</strong>
+                <span id="databaseProductStock"
+                      th:text="${product.stock}">
+                0
+            </span>
+            </p>
+
+            <p th:if="${product.stock == 0}"
+               style="color:red;">
+                This product is currently out of stock.
+            </p>
+
+            <p><strong>Quantity:</strong></p>
+
+            <div class="product-quantity">
+
+                <button type="button"
+                        onclick="decreaseDatabaseQuantity()"
+                        th:disabled="${product.stock == 0}">
+                    -
+                </button>
+
+                <span id="databaseProductQuantity">1</span>
+
+                <button type="button"
+                        onclick="increaseDatabaseQuantity()"
+                        th:disabled="${product.stock == 0}">
+                    +
+                </button>
+
+            </div>
+
+            <div class="product-actions">
+
+                <button type="button"
+                        onclick="addDatabaseProductToCart()"
+                        th:disabled="${product.stock == 0}">
+                    Add to Cart
+                </button>
+
+                <button type="button"
+                        onclick="buyDatabaseProductNow()"
+                        th:disabled="${product.stock == 0}">
+                    Buy Now
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section th:if="${product == null}">
+
+        <h1>Product Not Found</h1>
+
+        <a href="/products">
+            Back to Products
+        </a>
+
+    </section>
+
+</main>
+
+<script th:inline="javascript"
+        th:if="${product != null}">
+
+    const databaseProduct = {
+
+        id: /*[[${product.id}]]*/ 0,
+
+        name: /*[[${product.name}]]*/ '',
+
+        price: /*[[${product.price}]]*/ 0,
+
+        color: /*[[${product.color}]]*/ '',
+
+        image: /*[[${product.image}]]*/ '',
+
+        category: /*[[${product.category}]]*/ '',
+
+        stock: /*[[${product.stock}]]*/ 0
+    };
+
+    let databaseQuantity = 1;
+
+    function increaseDatabaseQuantity() {
+
+        if (databaseQuantity < databaseProduct.stock) {
+
+            databaseQuantity++;
+
+            document.getElementById(
+                "databaseProductQuantity"
+            ).textContent = databaseQuantity;
+
+        } else {
+
+            alert("You cannot order more than available stock.");
+
+        }
+    }
+
+    function decreaseDatabaseQuantity() {
+
+        if (databaseQuantity > 1) {
+
+            databaseQuantity--;
+
+            document.getElementById(
+                "databaseProductQuantity"
+            ).textContent = databaseQuantity;
+        }
+    }
+
+    function addDatabaseProductToCart() {
+
+        if (databaseProduct.stock <= 0) {
+
+            alert("This product is out of stock.");
+
+            return false;
+        }
+
+        let cart =
+            JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        const existingProduct =
+            cart.find(function(item) {
+
+                return Number(item.id) ===
+                    Number(databaseProduct.id);
+
+            });
+
+        if (existingProduct) {
+
+            const newQuantity =
+                Number(existingProduct.quantity) +
+                databaseQuantity;
+
+            if (newQuantity > databaseProduct.stock) {
+
+                alert(
+                    "Only " +
+                    databaseProduct.stock +
+                    " items are available."
+                );
+
+                return false;
+            }
+
+            existingProduct.quantity = newQuantity;
+
+        } else {
+
+            cart.push({
+
+                id: databaseProduct.id,
+
+                name: databaseProduct.name,
+
+                price: Number(databaseProduct.price),
+
+                color: databaseProduct.color,
+
+                image: databaseProduct.image,
+
+                category: databaseProduct.category,
+
+                quantity: databaseQuantity
+            });
+        }
+
+        localStorage.setItem(
+            "cartItems",
+            JSON.stringify(cart)
+        );
+
+        alert(
+            databaseProduct.name +
+            " added to cart!"
+        );
+
+        return true;
+    }
+
+    function buyDatabaseProductNow() {
+
+        if (addDatabaseProductToCart()) {
+
+            window.location.href = "/cart";
+
+        }
+    }
+
+</script>
+
+</body>
+</html>

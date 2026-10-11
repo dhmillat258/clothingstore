@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Orders - ClothingStore</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">ClothingStore Admin</div>
+
+    <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/logout">Logout</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="admin-orders">
+
+        <h1>All Orders</h1>
+
+        <div th:if="${orders.isEmpty()}">
+
+            <h3>No orders yet.</h3>
+
+        </div>
+
+        <div th:each="order : ${orders}"
+             class="order-card">
+
+            <h2>
+                Order #<span th:text="${order.id}"></span>
+            </h2>
+
+            <p>
+                <strong>Customer:</strong>
+                <span th:text="${order.customerName}"></span>
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                <span th:text="${order.phone}"></span>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <span th:text="${order.email}"></span>
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                <span th:text="${order.address}"></span>
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                <span th:text="${order.orderDate}"></span>
+            </p>
+
+            <p>
+                <strong>Payment:</strong>
+                <span th:text="${order.paymentMethod}"></span>
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                <span th:text="${order.status}"></span>
+            </p>
+
+            <h3>Products</h3>
+
+            <div th:each="item : ${order.items}">
+
+                <p>
+                    <strong th:text="${item.productName}">
+                        Product
+                    </strong>
+
+                    ×
+
+                    <span th:text="${item.quantity}">
+                    1
+                </span>
+
+                    — ৳<span th:text="${item.price}">
+                    0
+                </span>
+                </p>
+
+            </div>
+
+            <h3>
+                Total:
+                ৳<span th:text="${order.total}"></span>
+            </h3>
+
+            <form action="/admin/orders/status"
+                  method="post">
+
+                <input type="hidden"
+                       name="orderId"
+                       th:value="${order.id}">
+
+                <label>Change Status</label>
+
+                <select name="status">
+
+                    <option value="Pending"
+                            th:selected="${order.status == 'Pending'}">
+                        Pending
+                    </option>
+
+                    <option value="Processing"
+                            th:selected="${order.status == 'Processing'}">
+                        Processing
+                    </option>
+
+                    <option value="Shipped"
+                            th:selected="${order.status == 'Shipped'}">
+                        Shipped
+                    </option>
+
+                    <option value="Delivered"
+                            th:selected="${order.status == 'Delivered'}">
+                        Delivered
+                    </option>
+
+                    <option value="Cancelled"
+                            th:selected="${order.status == 'Cancelled'}">
+                        Cancelled
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    Update Status
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

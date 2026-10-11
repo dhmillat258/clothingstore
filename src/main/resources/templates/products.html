@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Products - ClothingStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ClothingStore</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/products">All Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/contact">Contact</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="category-section">
+
+        <h1>All Products</h1>
+
+        <div class="product-grid">
+
+            <div class="product-card"
+                 th:each="product : ${products}">
+
+                <div class="product-image">
+                    <img th:src="${product.image}"
+                         th:alt="${product.name}">
+                </div>
+
+                <h3 th:text="${product.name}">
+                    Product Name
+                </h3>
+
+                <p th:if="${product.color != null and product.color != ''}"
+                   th:text="${product.color}">
+                    Color
+                </p>
+
+                <p>
+                    ৳<span th:text="${#numbers.formatDecimal(product.price, 0, 0)}">
+                    0
+                </span>
+                </p>
+
+                <p th:if="${product.stock > 0}">
+                    Stock:
+                    <span th:text="${product.stock}">0</span>
+                </p>
+
+                <p th:if="${product.stock == 0}"
+                   style="color:red;">
+                    Out of Stock
+                </p>
+
+                <a th:href="@{/product-details(product=${product.id})}">
+                    <button>View Product</button>
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

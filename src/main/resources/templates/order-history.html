@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Order History - ClothingStore</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">ClothingStore</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/products">All Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/order-history">My Orders</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="admin-orders">
+
+        <h1>My Order History</h1>
+
+        <div th:if="${orders.isEmpty()}">
+
+            <h3>You have not placed any orders yet.</h3>
+
+            <a href="/products">
+                Start Shopping
+            </a>
+
+        </div>
+
+        <div th:each="order : ${orders}"
+             class="order-card">
+
+            <h2>
+                Order #<span th:text="${order.id}"></span>
+            </h2>
+
+            <p>
+                <strong>Date:</strong>
+                <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy, hh:mm a')}"></span>
+            </p>
+
+            <p>
+                <strong>Name:</strong>
+                <span th:text="${order.customerName}"></span>
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                <span th:text="${order.phone}"></span>
+            </p>
+
+            <p>
+                <strong>Address:</strong>
+                <span th:text="${order.address}"></span>
+            </p>
+
+            <p>
+                <strong>Payment:</strong>
+                <span th:text="${order.paymentMethod}"></span>
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                <span th:text="${order.status}"></span>
+            </p>
+
+            <h3>
+                Total:
+                ৳<span th:text="${order.total}"></span>
+            </h3>
+
+            <a th:href="@{/order-details/{id}(id=${order.id})}">
+                View Order Details
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

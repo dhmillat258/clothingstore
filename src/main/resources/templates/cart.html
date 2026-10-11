@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart - ClothingStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ClothingStore</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/cart">Cart</a>
+        <a href="/contact">Contact</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="cart">
+
+        <h1>Shopping Cart</h1>
+
+        <div id="cartContainer"></div>
+
+        <div class="cart-summary">
+
+            <p>
+                Subtotal:
+                ৳<span id="subtotal">0</span>
+            </p>
+
+            <div class="coupon-section">
+
+                <h3>Discount Coupon</h3>
+
+                <input
+                        type="text"
+                        id="couponCode"
+                        placeholder="Enter coupon code"
+                        autocomplete="off">
+
+                <button
+                        type="button"
+                        onclick="applyCoupon()">
+                    Apply Coupon
+                </button>
+
+                <p id="couponMessage"></p>
+
+            </div>
+
+            <p>
+                Discount:
+                ৳<span id="discount">0</span>
+            </p>
+
+            <h2>
+                Total:
+                ৳<span id="total">0</span>
+            </h2>
+
+            <button
+                    class="checkout-button"
+                    onclick="goToCheckout()">
+                Proceed to Checkout
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+    let discountAmount = 0;
+    let couponApplied = false;
+
+    let cart =
+        JSON.parse(localStorage.getItem("cartItems")) || [];
+
+
+    function displayCart() {
+
+        const container =
+            document.getElementById("cartContainer");
+
+        container.innerHTML = "";
+
+        if (cart.length === 0) {
+
+            container.innerHTML =
+                "<p>Your cart is empty.</p>";
+
+            updateSummary();
+
+            return;
+        }
+
+        cart.forEach(function(item, index) {
+
+            const itemTotal =
+                item.price * item.quantity;
+
+            container.innerHTML += `
+
+            <div class="cart-item">
+
+                <div class="cart-image">
+
+                    <img
+                        src="${item.image}"
+                        alt="${item.name}">
+
+                </div>
+
+                <div class="cart-info">
+
+                    <h3>${item.name}</h3>
+
+                    <p>
+                        ${item.color || ""}
+                    </p>
+
+                    <p>
+                        Price:
+                        ৳${Number(item.price).toLocaleString()}
+                    </p>
+
+                    <div class="cart-quantity">
+
+                        <button
+                            type="button"
+                            onclick="decreaseQuantity(${index})">
+                            -
+                        </button>
+
+                        <span>
+                            ${item.quantity}
+                        </span>
+
+                        <button
+                            type="button"
+                            onclick="increaseQuantity(${index})">
+                            +
+                        </button>
+
+                    </div>
+
+                    <p>
+                        Total:
+                        ৳${itemTotal.toLocaleString()}
+                    </p>
+
+                    <button
+                        type="button"
+                        class="remove-button"
+                        onclick="removeItem(${index})">
+                        Remove
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+        });
+
+        updateSummary();
+    }
+
+
+    function increaseQuantity(index) {
+
+        cart[index].quantity++;
+
+        saveCart();
+    }
+
+
+    function decreaseQuantity(index) {
+
+        if (cart[index].quantity > 1) {
+
+            cart[index].quantity--;
+
+        }
+
+        saveCart();
+    }
+
+
+    function removeItem(index) {
+
+        cart.splice(index, 1);
+
+        saveCart();
+    }
+
+
+    function saveCart() {
+
+        localStorage.setItem(
+            "cartItems",
+            JSON.stringify(cart)
+        );
+
+        displayCart();
+    }
+
+
+    function applyCoupon() {
+
+        const couponInput =
+            document.getElementById("couponCode");
+
+        const couponMessage =
+            document.getElementById("couponMessage");
+
+        const couponCode =
+            couponInput.value.trim().toUpperCase();
+
+
+        if (couponCode === "") {
+
+            couponApplied = false;
+            discountAmount = 0;
+
+            couponMessage.textContent =
+                "Please enter a coupon code.";
+
+            updateSummary();
+
+            return;
+        }
+
+
+        if (couponCode === "SAVE10") {
+
+            couponApplied = true;
+
+            couponMessage.textContent =
+                "Coupon applied successfully! 10% discount.";
+
+            updateSummary();
+
+        } else {
+
+            couponApplied = false;
+            discountAmount = 0;
+
+            couponMessage.textContent =
+                "Invalid coupon code.";
+
+            updateSummary();
+
+        }
+
+    }
+
+
+    function updateSummary() {
+
+        let subtotal = 0;
+
+
+        cart.forEach(function(item) {
+
+            subtotal +=
+                Number(item.price) * Number(item.quantity);
+
+        });
+
+
+        if (couponApplied) {
+
+            discountAmount =
+                subtotal * 0.10;
+
+        } else {
+
+            discountAmount = 0;
+
+        }
+
+
+        const total =
+            subtotal - discountAmount;
+
+
+        document.getElementById("subtotal")
+            .textContent =
+            subtotal.toLocaleString();
+
+
+        document.getElementById("discount")
+            .textContent =
+            discountAmount.toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 0
+                }
+            );
+
+
+        document.getElementById("total")
+            .textContent =
+            total.toLocaleString(
+                undefined,
+                {
+                    maximumFractionDigits: 0
+                }
+            );
+
+    }
+
+
+    function goToCheckout() {
+
+        if (cart.length === 0) {
+
+            alert("Your cart is empty.");
+
+            return;
+        }
+
+        localStorage.setItem(
+            "discountAmount",
+            discountAmount
+        );
+
+        window.location.href = "/checkout";
+
+    }
+
+
+    displayCart();
+
+</script>
+
+</body>
+</html>

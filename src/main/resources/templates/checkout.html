@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout - ClothingStore</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">ClothingStore</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/men">Men</a>
+        <a href="/women">Women</a>
+        <a href="/kids">Kids</a>
+        <a href="/products">All Products</a>
+        <a href="/cart">Cart</a>
+        <a href="/contact">Contact</a>
+    </nav>
+
+</header>
+
+<main>
+
+    <section class="checkout">
+
+        <h1>Checkout</h1>
+
+        <div class="checkout-container">
+
+            <div class="checkout-form">
+
+                <h2>Customer Information</h2>
+
+                <label>Full Name</label>
+
+                <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter your name"
+                        required>
+
+                <label>Phone Number</label>
+
+                <input
+                        type="text"
+                        id="phone"
+                        placeholder="Enter phone number"
+                        required>
+
+                <label>Email</label>
+
+                <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter email">
+
+                <label>Delivery Address</label>
+
+                <textarea
+                        id="address"
+                        placeholder="Enter your delivery address"
+                        required></textarea>
+
+                <h2>Payment Method</h2>
+
+                <label>
+                    <input
+                            type="radio"
+                            name="payment"
+                            value="Cash on Delivery"
+                            checked>
+
+                    Cash on Delivery
+                </label>
+
+                <label>
+                    <input
+                            type="radio"
+                            name="payment"
+                            value="Online Payment">
+
+                    Online Payment
+                </label>
+
+                <button
+                        class="place-order-button"
+                        type="button"
+                        onclick="placeOrder()">
+
+                    Place Order
+
+                </button>
+
+            </div>
+
+            <div class="checkout-summary">
+
+                <h2>Order Summary</h2>
+
+                <div id="checkoutItems"></div>
+
+                <hr>
+
+                <div class="summary-item">
+
+                    <span>Subtotal</span>
+
+                    <span>
+                        ৳<span id="checkoutSubtotal">0</span>
+                    </span>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <span>Discount</span>
+
+                    <span>
+                        ৳<span id="checkoutDiscount">0</span>
+                    </span>
+
+                </div>
+
+                <div class="summary-total">
+
+                    <strong>Total</strong>
+
+                    <strong>
+                        ৳<span id="checkoutTotal">0</span>
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+    let cart =
+        JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    let subtotal = 0;
+    let discount = 0;
+    let total = 0;
+
+
+    function loadCheckout() {
+
+        const container =
+            document.getElementById("checkoutItems");
+
+        container.innerHTML = "";
+
+        subtotal = 0;
+
+        if (cart.length === 0) {
+
+            container.innerHTML =
+                "<p>Your cart is empty.</p>";
+
+            document.getElementById("checkoutSubtotal")
+                .textContent = "0";
+
+            document.getElementById("checkoutDiscount")
+                .textContent = "0";
+
+            document.getElementById("checkoutTotal")
+                .textContent = "0";
+
+            return;
+        }
+
+
+        cart.forEach(function(item) {
+
+            const itemTotal =
+                Number(item.price) * Number(item.quantity);
+
+            subtotal += itemTotal;
+
+
+            container.innerHTML += `
+
+                <div class="summary-item">
+
+                    <span>
+                        ${item.name}
+                        × ${item.quantity}
+                    </span>
+
+                    <span>
+                        ৳${itemTotal.toLocaleString()}
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+
+
+        const savedDiscount =
+            localStorage.getItem("discountAmount");
+
+        discount =
+            Number(savedDiscount) || 0;
+
+
+        total =
+            subtotal - discount;
+
+
+        document.getElementById("checkoutSubtotal")
+            .textContent =
+            subtotal.toLocaleString();
+
+
+        document.getElementById("checkoutDiscount")
+            .textContent =
+            discount.toLocaleString();
+
+
+        document.getElementById("checkoutTotal")
+            .textContent =
+            total.toLocaleString();
+
+    }
+    function placeOrder() {
+
+        if (cart.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const address =
+            document.getElementById("address").value.trim();
+
+
+        const paymentElement =
+            document.querySelector(
+                'input[name="payment"]:checked'
+            );
+
+
+        if (name === "") {
+
+            alert("Please enter your name.");
+
+            return;
+        }
+
+
+        if (phone === "") {
+
+            alert("Please enter your phone number.");
+
+            return;
+        }
+
+
+        if (address === "") {
+
+            alert("Please enter your delivery address.");
+
+            return;
+        }
+
+
+        const payment =
+            paymentElement
+                ? paymentElement.value
+                : "Cash on Delivery";
+
+
+        const formData =
+            new URLSearchParams();
+
+
+        formData.append("name", name);
+
+        formData.append("phone", phone);
+
+        formData.append("email", email);
+
+        formData.append("address", address);
+
+        formData.append("payment", payment);
+
+        formData.append("total", total);
+
+        formData.append(
+            "cartItems",
+            JSON.stringify(cart)
+        );
+
+
+        fetch("/place-order", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body: formData.toString()
+
+        })
+
+            .then(function(response) {
+
+                return response.text();
+
+            })
+            .then(function(result) {
+
+                if (result === "LOGIN_REQUIRED") {
+
+                    alert("Please login before placing your order.");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                if (result === "INVALID_NAME") {
+
+                    alert("Please enter a valid name.");
+                    return;
+                }
+
+                if (result === "INVALID_PHONE") {
+
+                    alert("Please enter a valid Bangladesh phone number.");
+                    return;
+                }
+
+                if (result === "INVALID_EMAIL") {
+
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+
+                if (result === "INVALID_ADDRESS") {
+
+                    alert("Please enter a valid delivery address.");
+                    return;
+                }
+
+                if (result === "INVALID_PAYMENT") {
+
+                    alert("Please select a valid payment method.");
+                    return;
+                }
+
+                if (result.startsWith("success:")) {
+
+                    const orderId =
+                        result.substring("success:".length);
+
+                    alert("Order placed successfully!");
+
+                    localStorage.removeItem("cartItems");
+                    localStorage.removeItem("discountAmount");
+
+                    window.location.href =
+                        "/order-success?order=" +
+                        encodeURIComponent(orderId);
+
+                    return;
+                }
+
+                if (result.startsWith("OUT_OF_STOCK:")) {
+
+                    const productName =
+                        result.substring("OUT_OF_STOCK:".length);
+
+                    alert(
+                        productName +
+                        " does not have enough stock."
+                    );
+
+                    return;
+                }
+
+                alert(
+                    "There was a problem placing your order."
+                );
+            })
+
+    }
+
+
+    loadCheckout();
+
+</script>
+
+</body>
+
+</html>
